@@ -57,7 +57,7 @@ contract Bank {
         balance[to] += weiValue;
         
         emit TransferEvent(msg.sender, to, etherValue, now);
-}
+    }
     // 購買定存
     function buyContractDeposit(uint256 etherValue,uint256 periods) public {
         uint256 weiValue = etherValue * 1 ether;
@@ -72,19 +72,26 @@ contract Bank {
     }
     // 合約期滿
     function contractExpired() public {
-        
+
+        require(contractValue > 0, "No money contract deposit");
+        require(contractPeriods > 0, "period <= 0");
+
         balance[msg.sender] += contractValue + contractValue * contractPeriods /100;
-        
+        contractValue = 0;
+        contractPeriods = 0;
         
         emit contractExpiredEvent(msg.sender, now);
 }
     // 提前解約
     function terminateContract(uint256 periods) public {
         
-        //require(balance[msg.sender] >= weiValue, "your balances are not enough");
+        require(contractValue > 0, "No money contract deposit");
+        require(periods > 0, "period <= 0");
+        require(contractPeriods > periods, "period >= contractPeriods");
         
         balance[msg.sender] += contractValue + contractValue * periods /100;
-        
+        contractValue = 0;
+        contractPeriods = 0;
         
         emit terminateContractEvent(msg.sender, periods, now);
     }
