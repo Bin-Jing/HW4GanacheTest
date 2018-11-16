@@ -63,6 +63,8 @@ contract Bank {
         uint256 weiValue = etherValue * 1 ether;
         
         require(balance[msg.sender] >= weiValue, "your balances are not enough");
+        require(contractPeriods == 0, "You already have a Contract Deposit");
+
         contractValue = weiValue;
         contractPeriods = periods;
         balance[msg.sender] -= weiValue;
